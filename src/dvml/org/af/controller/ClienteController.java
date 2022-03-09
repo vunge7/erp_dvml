@@ -20,6 +20,9 @@ public class ClienteController implements EntityInterface
 {
 
     private final String INSERT = "INSERT INTO af_clientes(nome, nif, endereco, telefone) VALUES(?,?,?,?)";
+    private final String UPDATE = "UPDATE af_clientes SET nome = ?, nif = ?, endereco = ?, telefone = ? WHERE pk_af_cliente = ?";
+    private final String DELETE = "DELETE FROM af_clientes WHERE pk_af_cliente = ?";
+
     private final BDConexao conexao;
 
     public ClienteController( BDConexao conexao )
@@ -43,10 +46,10 @@ public class ClienteController implements EntityInterface
              * Definição dos ? na query
              */
             ps.setString( 1, cliente.getNome() );
-            ps.setString( 2, cliente.getNif());
-            ps.setString( 3, cliente.getEndereco());
-            ps.setString( 4, cliente.getTelefone());
-            
+            ps.setString( 2, cliente.getNif() );
+            ps.setString( 3, cliente.getEndereco() );
+            ps.setString( 4, cliente.getTelefone() );
+
             //executa a query
             ps.executeUpdate();
             return true;
@@ -62,13 +65,52 @@ public class ClienteController implements EntityInterface
     @Override
     public boolean actualizar( Object object )
     {
-        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        //casting
+        Cliente cliente = ( Cliente ) object;
+        //ligar a conexão
+        Connection cnn = conexao.ligarBB();
+
+        try
+        {
+            System.out.println( UPDATE );
+            PreparedStatement ps = cnn.prepareStatement( UPDATE );
+            ps.setString( 1, cliente.getNome() );
+            ps.setString( 2, cliente.getNif() );
+            ps.setString( 3, cliente.getEndereco() );
+            ps.setString( 4, cliente.getTelefone() );
+            ps.setInt( 5, cliente.getPkAfCliente() );
+
+            ps.executeUpdate();
+            return true;
+        }
+        catch ( SQLException e )
+        {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     @Override
     public boolean excluir( int id )
     {
-        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        Connection cnn = conexao.ligarBB();
+
+        try
+        {
+            PreparedStatement ps = cnn.prepareStatement( DELETE );
+            ps.setInt( 1, id );
+
+            ps.executeUpdate();
+            return true;
+
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

@@ -39,5 +39,21 @@ public class MetodoUtil
         return data;
         
     }
+    public static String getDataAAAAMMDD(Date date)
+    {
+        
+        //concatenação
+        String data = "";
+        
+        int ano = date.getYear() + 1900;
+        int mes = date.getMonth() + 1;
+        int dia = date.getDate();
+       
+        
+        data = ano  + "-" +mes +"-" +dia ;
+        
+        return data;
+        
+    }
     
 }

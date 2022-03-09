@@ -5,8 +5,8 @@
  */
 package dvml.org.util;
 
-import dvml.org.af.controller.ClienteController;
-import dvml.org.af.entity.Cliente;
+import dvml.org.pat.controller.CategoriaController;
+import dvml.org.pat.entity.Categoria;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,27 +15,25 @@ import javax.swing.JOptionPane;
  */
 public class Testador
 {
-
+    
     public static void main( String[] args )
     {
         BDConexao conexao = new BDConexao();
-        ClienteController cc = new ClienteController( conexao );
-
-        Cliente cliente = new Cliente();
-        cliente.setNome( "Paulo Costa" );
-        cliente.setTelefone( "923456778" );
-        cliente.setEndereco( "Luanda/belas" );
-        cliente.setNif( "999999999" );
-
-        if ( cc.criar( cliente ) )
+        CategoriaController catC = new CategoriaController( conexao );
+        
+        Categoria cat = new Categoria();
+        cat.setDesignacao( "ACs" );
+        cat.setPkPtCategoria( 1 );
+        
+        if ( catC.actualizar(cat ) )
         {
-            JOptionPane.showMessageDialog( null, "Cliente adicionado com sucesso na BD" );
+            JOptionPane.showMessageDialog( null, "Categoria actualizada com sucesso!..." );
         }
         else
         {
-            JOptionPane.showMessageDialog( null, "Falha ao salvar o cliente na BD", "ERRO", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog( null, "Falhao ao actualizar a categoria" );
         }
-
+        
     }
-
+    
 }

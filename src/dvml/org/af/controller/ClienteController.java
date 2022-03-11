@@ -10,7 +10,10 @@ import dvml.org.util.BDConexao;
 import dvml.org.util.EntityInterface;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -22,7 +25,7 @@ public class ClienteController implements EntityInterface
     private final String INSERT = "INSERT INTO af_clientes(nome, nif, endereco, telefone) VALUES(?,?,?,?)";
     private final String UPDATE = "UPDATE af_clientes SET nome = ?, nif = ?, endereco = ?, telefone = ? WHERE pk_af_cliente = ?";
     private final String DELETE = "DELETE FROM af_clientes WHERE pk_af_cliente = ?";
-
+    private final String FIND_ALL = "SELECT * FROM af_clientes ORDER BY nome ASC";
     private final BDConexao conexao;
 
     public ClienteController( BDConexao conexao )
@@ -111,6 +114,39 @@ public class ClienteController implements EntityInterface
         }
 
         return false;
+    }
+
+    public List<Cliente> getAllClientes()
+    {
+        Connection cnn = conexao.ligarBB();
+        List<Cliente> list_clients = new ArrayList<>();
+        try
+        {
+            PreparedStatement ps = cnn.prepareStatement( FIND_ALL );
+
+            ResultSet result = ps.executeQuery();
+
+            while ( result.next() )
+            {
+                Cliente cliente = new Cliente();
+
+                cliente.setPkAfCliente( result.getInt( "pk_af_cliente" ) );
+                cliente.setNome( result.getString( "nome" ) );
+                cliente.setNif( result.getString( "nif" ) );
+                cliente.setEndereco( result.getString( "endereco" ) );
+                cliente.setTelefone( result.getString( "telefone" ) );
+
+                list_clients.add( cliente );
+            }
+
+        }
+        catch ( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        
+        return list_clients;
+
     }
 
 }

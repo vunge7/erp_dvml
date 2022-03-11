@@ -21,7 +21,7 @@ public class TipologiaController implements EntityInterface
 {
 
     private String INSERT = "INSERT INTO parc_tipologia(designacao, percentagem) VALUES(?,?)";
-    private String UPDATE = "";
+    private String UPDATE = "UPDATE parc_tipologia SET designacao = ?, percentagem = ? WHERE pk_parc_tipologia = ?";
     private String DELETE = "";
 
     private BDConexao conexao;
@@ -57,7 +57,24 @@ public class TipologiaController implements EntityInterface
     @Override
     public boolean actualizar( Object object )
     {
-        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+        Tipologia tipologia = ( Tipologia ) object;
+        Connection connection = conexao.ligarBB();
+        try
+        {
+            PreparedStatement ps = connection.prepareStatement( UPDATE );
+            ps.setString( 1, tipologia.getDesignacao() );
+            ps.setDouble( 2, tipologia.getPercentagem() );
+            ps.setInt( 3, tipologia.getPkParcTipologia() );
+
+            ps.executeUpdate();
+            return true;
+        }
+        catch ( SQLException e )
+        {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     @Override
@@ -77,11 +94,11 @@ public class TipologiaController implements EntityInterface
 
         if ( tp.criar( tipologia ) )
         {
-            JOptionPane.showMessageDialog( null, "Criado com sucesso!...");
+            JOptionPane.showMessageDialog( null, "Criado com sucesso!..." );
         }
         else
         {
-            JOptionPane.showMessageDialog( null, "Erro ao salvar no banco de dados");
+            JOptionPane.showMessageDialog( null, "Erro ao salvar no banco de dados" );
         }
     }
 
